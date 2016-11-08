@@ -24,17 +24,23 @@ class Breadcrumbs extends React.Component {
     let name = null;
 
     if (typeof route.getDisplayName === 'function') {
+      console.log("Getdisplayname function called");
       name = route.getDisplayName();
     }
 
     if(route.indexRoute) {
+      console.log("indexroute!");
       name = name || route.indexRoute.displayName || null;
+      console.log("indexroute! after", name);
     } else {
+      console.log("NON indexroute! after", name);
       name = name || route.displayName || null;
+      console.log("after NON indexroute! after", name);
     }
 
     //check to see if a custom name has been applied to the route
     if (!name && !!route.name) {
+      console.log("noname but has route name");
       name = route.name;
     }
 
@@ -42,6 +48,7 @@ class Breadcrumbs extends React.Component {
     //if (name && this.props.excludes.some(item => item === name)) return null;
 
     if (!name && this.props.displayMissing) {
+      console.log("has props display missing");
       name = this.props.displayMissingText;
     }
 
@@ -49,9 +56,13 @@ class Breadcrumbs extends React.Component {
   }
 
   _resolveRouteName(route){
+    console.log("Resolve route name ");
     let name = this._getDisplayName(route);
+    console.log("A1", name);
     if(!name && route.breadcrumbName) name=route.breadcrumbName;
+    console.log("A2", name);
     if(!name && route.name) name=route.name;
+    console.log("A3", name);
     return name;
   }
 
@@ -71,7 +82,7 @@ class Breadcrumbs extends React.Component {
 
     // don't make link if route doesn't have a child route
     if(makeLink){
-      makeLink = route.childRoutes ? true : false;
+      makeLink = !!route.childRoutes;
       makeLink = routesLength !== (crumbsLength+1);
     }
 
@@ -107,7 +118,7 @@ class Breadcrumbs extends React.Component {
             } else {
               return link;
             }
-          })
+          });
           route.path=pathWithParam.reduce((start,link)=>{return start+"/"+link;})
           if(!route.staticName && currentKey.substring(0,1)==":")
             name=pathWithParam.reduce((start,link)=>{return link;});
@@ -117,19 +128,20 @@ class Breadcrumbs extends React.Component {
           }
         }
       }
-    })
+    });
     if (name) {
 
       if(this.props.prettify){
         // Note: this could be replaced with a more complex prettifier
-        console.log('prettifying')
+        console.log('prettifying');
         name = name.replace(/-/g, ' ');
         name = name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
       }
 
-      var itemClass = this.props.itemClass;
+      let itemClass = this.props.itemClass;
+      let link;
       if(makeLink){
-        var link = !createElement ? name:
+        link = !createElement ? name:
           React.createElement(Link, {
           to: route.path,
         }, name);
