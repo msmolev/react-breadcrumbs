@@ -20,6 +20,7 @@ class Breadcrumbs extends React.Component {
   }
 
   _getDisplayName(route) {
+    console.log("Getdisplayname", route);
     let name = null;
 
     if (typeof route.getDisplayName === 'function') {
